@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <!-- Gradiente Principal de Fondo -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="50%" stop-color="#3B82F6" />
+      <stop offset="100%" stop-color="#10B981" />
+    </linearGradient>
+
+    <!-- Gradiente del Símbolo Interno -->
+    <linearGradient id="symbolGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="100%" stop-color="#E0F2FE" />
+    </linearGradient>
+
+    <!-- Filtro de Resplandor / Sombra Suave -->
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#0F172A" flood-opacity="0.3" />
+    </filter>
+  </defs>
+
+  <!-- Contenedor Base Estilo App Icon con Esquinas Redondeadas Premium -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+
+  <!-- Anillos Decorativos Glassmorphism -->
+  <circle cx="256" cy="256" r="190" fill="none" stroke="#FFFFFF" stroke-opacity="0.15" stroke-width="8" />
+  <circle cx="256" cy="256" r="140" fill="none" stroke="#FFFFFF" stroke-opacity="0.25" stroke-dasharray="16 16" stroke-width="6" />
+
+  <!-- Isotipo: Portal Layer / Escudo de Progreso -->
+  <g filter="url(#glow)">
+    <!-- Capa Trasera (Capa de Progreso) -->
+    <path d="M256 120 L380 184 L256 248 L132 184 Z" fill="url(#symbolGrad)" fill-opacity="0.6" />
+    
+    <!-- Capa Intermedia -->
+    <path d="M256 190 L380 254 L256 318 L132 254 Z" fill="url(#symbolGrad)" fill-opacity="0.85" />
+
+    <!-- Capa Frontal Principal -->
+    <path d="M256 260 L380 324 L256 388 L132 324 Z" fill="url(#symbolGrad)" />
+
+    <!-- Punto Brillante de Sincronización en Tiempo Real -->
+    <circle cx="380" cy="184" r="20" fill="#34D399" stroke="#FFFFFF" stroke-width="6" />
+  </g>
+</svg>
