@@ -33,7 +33,7 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
     const status = error.response ? error.response.status : 500;
-    const serverMessage = error.response?.data?.message || error.response?.data?.error;
+    const serverMessage = error.response?.data?.error || error.response?.data?.message;
 
     let userFriendlyMessage = serverMessage;
 

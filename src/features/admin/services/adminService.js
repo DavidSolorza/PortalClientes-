@@ -19,8 +19,12 @@ export const fetchProjects = async (stage = '', search = '') => {
   let response;
   try {
     response = await apiClient.get('/spaces', { params });
-  } catch {
-    response = await apiClient.get('/projects', { params });
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.get('/projects', { params });
+    } catch {
+      throw primaryErr;
+    }
   }
 
   const d = response.data || {};
@@ -35,8 +39,12 @@ export const createProject = async (projectData) => {
   let response;
   try {
     response = await apiClient.post('/spaces', projectData);
-  } catch {
-    response = await apiClient.post('/projects', projectData);
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.post('/projects', projectData);
+    } catch {
+      throw primaryErr;
+    }
   }
 
   const pass = projectData.password || projectData.clave || projectData.pass;
@@ -58,8 +66,12 @@ export const updateProject = async (idOrSlug, projectData) => {
   let response;
   try {
     response = await apiClient.put(`/spaces/${idOrSlug}`, projectData);
-  } catch {
-    response = await apiClient.put(`/projects/${idOrSlug}`, projectData);
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.put(`/projects/${idOrSlug}`, projectData);
+    } catch {
+      throw primaryErr;
+    }
   }
 
   const pass = projectData.password || projectData.clave || projectData.pass;
@@ -81,8 +93,12 @@ export const resetProjectPassword = async (idOrSlug, payload = {}) => {
   let response;
   try {
     response = await apiClient.post(`/spaces/${idOrSlug}/reset-password`, payload);
-  } catch {
-    response = await apiClient.post(`/projects/${idOrSlug}/reset-password`, payload);
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.post(`/projects/${idOrSlug}/reset-password`, payload);
+    } catch {
+      throw primaryErr;
+    }
   }
 
   const resData = response.data || {};
@@ -101,8 +117,12 @@ export const deleteProject = async (idOrSlug) => {
   let response;
   try {
     response = await apiClient.delete(`/spaces/${idOrSlug}`);
-  } catch {
-    response = await apiClient.delete(`/projects/${idOrSlug}`);
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.delete(`/projects/${idOrSlug}`);
+    } catch {
+      throw primaryErr;
+    }
   }
   return response.data;
 };

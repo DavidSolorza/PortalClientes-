@@ -36,6 +36,14 @@ Requieren autenticación mediante cualquiera de los siguientes encabezados HTTP:
 
 ---
 
+### 3.1. Protocolo de Captura y Preservación de Errores de Cliente (Client Error Propagation)
+Para evitar que los mecanismos de *fallback* (ej. reintento de rutas alternativas `/spaces` vs `/projects`) enmascaren mensajes de error originales del servidor con fallos secundarios de autorización (`401`):
+
+1. **Interceptor HTTP Global (`src/core/api.js`):** Extrae prioritariamente la propiedad `error.response.data.error` seguida de `error.response.data.message` para garantizar que la descripción estructurada del backend se preserve intacta.
+2. **Propagación en Capa de Servicios:** Al ocurrir un fallo en una ruta primaria, el bloque `catch` captura la excepción previa `primaryErr`. Si el endpoint secundario en el fallback también falla, el servicio relanza `primaryErr` asegurando que la UI despliegue el mensaje y código HTTP original del fallo (ej. `409 Conflict` por slug duplicado o `401 Unauthorized` por credenciales inválidas).
+
+---
+
 ## 4. Endpoints Principales
 
 ### Auth: Verificar Acceso de Cliente (`POST /api/client-portal/auth/verify`)
