@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Lock, ArrowRight, User, Eye, EyeOff, MessageCircle } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
@@ -12,6 +12,56 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const { loginClient, loading, error, setError } = useAuth();
+
+  // Lectura automática de parámetros de la URL desde enlaces de correo (ej. ?slug=demo&password=clave123)
+  useEffect(() => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const hashParams = new URLSearchParams(window.location.hash.replace(/^#\/?/, '?'));
+
+    const getParam = (key) => searchParams.get(key) || hashParams.get(key);
+
+    const initialSlug =
+      getParam('slug') ||
+      getParam('user') ||
+      getParam('usuario') ||
+      getParam('project') ||
+      getParam('identificador') ||
+      getParam('space') ||
+      '';
+
+    const initialPassword =
+      getParam('password') ||
+      getParam('pass') ||
+      getParam('clave') ||
+      getParam('key') ||
+      getParam('token') ||
+      '';
+
+    if (initialSlug) setSlug(initialSlug);
+    if (initialPassword) setPassword(initialPassword);
+
+    // Auto-login instantáneo si el enlace contiene ambas credenciales
+    if (initialSlug && initialPassword) {
+      const autoLogin = async () => {
+        const cleanSlug = initialSlug.trim();
+        const cleanPassword = initialPassword.trim();
+
+        if (cleanSlug.toLowerCase() === 'admin' && cleanPassword === '210910624Dj') {
+          localStorage.setItem('admin_api_key', 'core_backend_secret_key_2026');
+          onAdminSuccess();
+          return;
+        }
+
+        try {
+          const projectData = await loginClient(cleanSlug, cleanPassword);
+          onClientSuccess(projectData);
+        } catch {
+          // Si falla, los campos quedan llenos para corregir manualmente
+        }
+      };
+      autoLogin();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -87,14 +137,17 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
             </motion.div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5" autoComplete="on">
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label htmlFor="slug" className="block text-xs font-medium text-slate-700 mb-1.5">
                 Identificador o Usuario
               </label>
               <div className="relative">
                 <input
                   type="text"
+                  id="slug"
+                  name="slug"
+                  autoComplete="username"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                   placeholder="ej. acme-ecommerce o Admin"
@@ -106,12 +159,15 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-700 mb-1.5">
+              <label htmlFor="password" className="block text-xs font-medium text-slate-700 mb-1.5">
                 Contraseña
               </label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  autoComplete="current-password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="******"
