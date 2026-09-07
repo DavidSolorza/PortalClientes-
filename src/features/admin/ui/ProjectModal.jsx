@@ -11,6 +11,7 @@ const STAGES = ['Planificación', 'Desarrollo', 'Pruebas', 'Despliegue'];
 export const ProjectModal = ({ isOpen, onClose, onSubmit, initialData = null }) => {
   const [formData, setFormData] = useState({
     client_name: '',
+    email: '',
     project_slug: '',
     password: '',
     github_repo: '',
@@ -28,6 +29,7 @@ export const ProjectModal = ({ isOpen, onClose, onSubmit, initialData = null }) 
       const existingPass = getRememberedPassword(initialData);
       setFormData({
         client_name: initialData.client_name || '',
+        email: initialData.email || initialData.correo || '',
         project_slug: initialData.project_slug || '',
         password: existingPass,
         github_repo: initialData.github_repo || '',
@@ -38,6 +40,7 @@ export const ProjectModal = ({ isOpen, onClose, onSubmit, initialData = null }) 
     } else {
       setFormData({
         client_name: '',
+        email: '',
         project_slug: '',
         password: '',
         github_repo: '',
@@ -123,6 +126,21 @@ export const ProjectModal = ({ isOpen, onClose, onSubmit, initialData = null }) 
                 placeholder="ej. Acme Corporation"
                 className="w-full px-3.5 py-2 rounded-xl glass-input text-slate-900 text-sm focus:outline-none placeholder-slate-400 bg-slate-50 border-slate-200"
                 required
+              />
+            </div>
+
+            <div>
+              <label htmlFor="email" className="block text-xs font-medium text-slate-700 mb-1">
+                Correo para notificaciones
+              </label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                placeholder="cliente@ejemplo.com"
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                className="w-full px-3.5 py-2 rounded-xl glass-input text-slate-900 text-sm focus:outline-none placeholder-slate-400 bg-slate-50 border-slate-200"
               />
             </div>
 

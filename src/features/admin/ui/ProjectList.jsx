@@ -1,12 +1,14 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Github, Edit, Trash2, Globe, Clock, Eye } from 'lucide-react';
+import { ExternalLink, Github, Edit, Trash2, Globe, Clock, Eye, Mail } from 'lucide-react';
 import { Card } from '../../../shared/Card';
 import { format24HourTime } from '../../../shared/utils/dateFormatter';
 
 const STAGES = ['Planificación', 'Desarrollo', 'Pruebas', 'Despliegue'];
 
 const ProjectCard = ({ project, idx, onEdit, onDelete, onStageChange, onPreviewSpace }) => {
+  const clientEmail = project.email || project.correo;
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -72,8 +74,14 @@ const ProjectCard = ({ project, idx, onEdit, onDelete, onStageChange, onPreviewS
             </select>
           </div>
 
-          {/* Enlaces asociados */}
+          {/* Enlaces y Datos asociados */}
           <div className="space-y-2 text-xs">
+            {clientEmail && (
+              <div className="flex items-center gap-2 text-slate-600">
+                <Mail className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <span className="truncate font-sans text-[11px] text-slate-600">{clientEmail}</span>
+              </div>
+            )}
             {project.github_repo && (
               <div className="flex items-center gap-2 text-slate-600">
                 <Github className="w-3.5 h-3.5 text-slate-400 shrink-0" />

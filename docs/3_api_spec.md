@@ -56,10 +56,17 @@ Para evitar que los mecanismos de *fallback* (ej. reintento de rutas alternativa
 
 ### Projects: Crear Proyecto (`POST /api/client-portal/projects` o `/spaces`)
 - **Headers**: `Authorization: Bearer <ADMIN_KEY>`, `Content-Type: application/json`
-- **Body**: `{ "client_name": "Acme", "password": "secret_pass", "current_stage": "Desarrollo" }`
+- **Body**: `{ "client_name": "Empresa Demo", "password": "claveDeAcceso123", "email": "contacto@cliente.com", "current_stage": "Planificación" }`
 - **Respuestas**:
   - `201 Created`: `{ "message": "Proyecto creado exitosamente", "data": { ... } }`
   - `400 Bad Request`: `{ "status": "error", "message": "Faltan campos requeridos" }`
+
+### Projects: Actualizar Correo de Proyecto (`PATCH /api/client-portal/projects/:id_o_slug` o `/spaces/:id_o_slug`)
+- **Headers**: `Authorization: Bearer <ADMIN_KEY>`, `Content-Type: application/json`
+- **Body**: `{ "email": "nuevo_correo@cliente.com" }`
+- **Respuestas**:
+  - `200 OK`: `{ "status": "success", "message": "Correo actualizado exitosamente", "data": { ... } }`
+  - `404 Not Found`: `{ "status": "error", "message": "Proyecto no encontrado" }`
 
 ### Reset Password: Restablecer / Generar Contraseña (`POST /api/client-portal/spaces/:slug/reset-password`)
 - **Headers**: `Authorization: Bearer <ADMIN_KEY>`, `Content-Type: application/json`

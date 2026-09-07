@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS projects (
     client_name VARCHAR(100) NOT NULL,
     project_slug VARCHAR(50) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
+    email VARCHAR(255),
     github_repo VARCHAR(255),
     testing_link VARCHAR(255),
     current_stage VARCHAR(50) NOT NULL DEFAULT 'Planificación',
@@ -41,6 +42,7 @@ CREATE INDEX IF NOT EXISTS idx_projects_current_stage ON projects (current_stage
 | `client_name` | `VARCHAR(100)` | `NOT NULL` | Nombre comercial o razón social del cliente (ej. "Acme Corp"). |
 | `project_slug` | `VARCHAR(50)` | `UNIQUE, NOT NULL` | Identificador único en URL para acceso directo al portal de cliente. |
 | `password_hash` | `VARCHAR(255)` | `NOT NULL` | Hash cifrado seguro generado con algoritmo `scrypt` y sal única. |
+| `email` | `VARCHAR(255)` | `NULL` | Correo electrónico de contacto/notificaciones del cliente (ej. "contacto@cliente.com"). |
 | `github_repo` | `VARCHAR(255)` | `NULL` | Repositorio GitHub en formato `owner/repo` asociado al proyecto. |
 | `testing_link` | `VARCHAR(255)` | `NULL` | Enlace HTTPS al entorno activo de pruebas o staging. |
 | `current_stage` | `VARCHAR(50)` | `NOT NULL, DEFAULT 'Planificación', CHECK` | Etapa del ciclo de vida (`Planificación`, `Desarrollo`, `Pruebas`, `Despliegue`). |

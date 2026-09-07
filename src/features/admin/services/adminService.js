@@ -70,7 +70,11 @@ export const updateProject = async (idOrSlug, projectData) => {
     try {
       response = await apiClient.put(`/projects/${idOrSlug}`, projectData);
     } catch {
-      throw primaryErr;
+      try {
+        response = await apiClient.patch(`/projects/${idOrSlug}`, projectData);
+      } catch {
+        throw primaryErr;
+      }
     }
   }
 
@@ -86,6 +90,20 @@ export const updateProject = async (idOrSlug, projectData) => {
     if (resObj.client_name) rememberProjectPassword(resObj.client_name, pass);
   }
 
+  return response.data;
+};
+
+export const updateProjectEmail = async (idOrSlug, email) => {
+  let response;
+  try {
+    response = await apiClient.patch(`/projects/${idOrSlug}`, { email });
+  } catch (primaryErr) {
+    try {
+      response = await apiClient.patch(`/spaces/${idOrSlug}`, { email });
+    } catch {
+      throw primaryErr;
+    }
+  }
   return response.data;
 };
 
