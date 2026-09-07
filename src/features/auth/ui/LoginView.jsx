@@ -13,12 +13,21 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
 
   const { loginClient, loading, error, setError } = useAuth();
 
-  // Lectura automática de parámetros de la URL desde enlaces de correo (ej. ?slug=demo&password=clave123)
+  // Lectura automática de parámetros de la URL desde enlaces de correo (ej. ?slug=demo&password=clave123 o /espacio/demo?pass=clave123)
   useEffect(() => {
     const searchParams = new URLSearchParams(window.location.search);
     const hashParams = new URLSearchParams(window.location.hash.replace(/^#\/?/, '?'));
 
     const getParam = (key) => searchParams.get(key) || hashParams.get(key);
+
+    // Extraer slug de la ruta URL si aplica (ej: /espacio/acme o /portal/acme)
+    const pathParts = window.location.pathname.split('/').filter(Boolean);
+    let pathSlug = '';
+    if (pathParts.length >= 2 && ['espacio', 'portal', 'spaces', 'projects', 'project'].includes(pathParts[0].toLowerCase())) {
+      pathSlug = pathParts[1];
+    } else if (pathParts.length === 1 && !['admin', 'login', 'index.html'].includes(pathParts[0].toLowerCase())) {
+      pathSlug = pathParts[0];
+    }
 
     const initialSlug =
       getParam('slug') ||
@@ -27,6 +36,7 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
       getParam('project') ||
       getParam('identificador') ||
       getParam('space') ||
+      pathSlug ||
       '';
 
     const initialPassword =
@@ -39,6 +49,15 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
 
     if (initialSlug) setSlug(initialSlug);
     if (initialPassword) setPassword(initialPassword);
+
+    // Limpiar los parámetros sensibles de la barra de direcciones por seguridad (OWASP)
+    if (window.location.search || window.location.hash) {
+      try {
+        window.history.replaceState({}, document.title, window.location.pathname);
+      } catch {
+        // Ignorar en entornos de prueba
+      }
+    }
 
     // Auto-login instantáneo si el enlace contiene ambas credenciales
     if (initialSlug && initialPassword) {
@@ -54,12 +73,16 @@ export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
 
         try {
           const projectData = await loginClient(cleanSlug, cleanPassword);
-          onClientSuccess(projectData);
-        } catch {
-          // Si falla, los campos quedan llenos para corregir manualmente
+          if (projectData) {
+            onClientSuccess(projectData);
+          }
+        } catch (err) {
+          console.warn('La verificación automática falló, se requiere confirmación manual:', err?.message || err);
         }
       };
-      autoLogin();
+
+      const timer = setTimeout(autoLogin, 60);
+      return () => clearTimeout(timer);
     }
   }, []);
 
