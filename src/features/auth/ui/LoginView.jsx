@@ -7,8 +7,8 @@ import { Card } from '../../../shared/Card';
 import { SUPPORT_PHONE } from '../../../core/config/constants';
 
 export const LoginView = ({ onClientSuccess, onAdminSuccess }) => {
-  const [slug, setSlug] = useState('acme-ecommerce');
-  const [password, setPassword] = useState('MiPasswordSeguro123!');
+  const [slug, setSlug] = useState('');
+  const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
 
   const { loginClient, loading, error, setError } = useAuth();
