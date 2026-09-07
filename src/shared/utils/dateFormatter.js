@@ -15,17 +15,28 @@ export const parseDateInput = (dateInput) => {
     let trimmed = dateInput.trim();
     if (!trimmed) return null;
 
-    // Detectar si la cadena ya tiene información explícita de zona horaria (Z o +/-HH:mm)
-    const hasTimezone = /[Zz]|\+\d{2}:?\d{2}|-\d{2}:?\d{2}$/.test(trimmed);
+    // Detectar patrones de marcas de tiempo ISO estándar YYYY-MM-DD HH:mm:ss o YYYY-MM-DDTHH:mm:ss
+    const match = trimmed.match(/^(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?/);
 
-    if (!hasTimezone) {
-      // Reemplazar espacio por T y adjuntar Z para forzar interpretación UTC del servidor
-      trimmed = trimmed.replace(' ', 'T');
-      if (!trimmed.endsWith('Z')) {
-        trimmed += 'Z';
+    if (match) {
+      const year = parseInt(match[1], 10);
+      const month = parseInt(match[2], 10) - 1;
+      const day = parseInt(match[3], 10);
+      const hour = parseInt(match[4], 10);
+      const minute = parseInt(match[5], 10);
+      const second = match[6] ? parseInt(match[6], 10) : 0;
+
+      // Verificar si especifica explícitamente una zona horaria con desplazamiento numérico (+/-HH:mm)
+      const hasExplicitOffset = /[+-]\d{2}:?\d{2}$/.test(trimmed);
+
+      if (!hasExplicitOffset) {
+        // Construir directamente usando los valores locales para evitar cualquier conversión UTC no deseada (-5h)
+        const localDate = new Date(year, month, day, hour, minute, second);
+        if (!isNaN(localDate.getTime())) return localDate;
       }
     }
 
+    // Fallback normal para fechas ISO completas con offset o formato estándar
     const parsed = new Date(trimmed);
     if (!isNaN(parsed.getTime())) return parsed;
   }
