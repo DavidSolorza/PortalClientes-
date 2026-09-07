@@ -11,7 +11,11 @@ export const useAuth = () => {
     try {
       const data = await verifyClientLogin(slug, password);
       setLoading(false);
-      return data.project;
+      const projectObj = data?.project || data?.data || (data?.project_slug ? data : null);
+      if (!projectObj) {
+        throw new Error('No se encontraron datos del proyecto para el identificador proporcionado.');
+      }
+      return projectObj;
     } catch (err) {
       setLoading(false);
       let userMsg = err.message;
